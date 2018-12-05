@@ -116,6 +116,34 @@ def game_hash
   }
 end
 
+def players
+  all_players = {}
+  game_hash.each do |status, characteristics|
+    all_players.merge!(characteristics[:players])
+  end
+  all_players
+end
+
+def player_by_number(number)
+  players.each do |name, stats|
+    if stats[number:] == number
+      return name
+    end
+  end
+end
+
+=begin
+def player_by_number(number)
+  game_hash.each do |status, characteristics|
+    characteristics[:players].each do |player, stats|
+      if stats[:number] == number
+        return player
+      end
+    end
+  end
+end
+=end
+
 def num_points_scored(name)
   #game_hash[team][:players][name][:points]
   game_hash.each do |status, characteristics|
@@ -124,6 +152,13 @@ def num_points_scored(name)
     end
   end
 end
+
+
+
+
+
+
+
 
 def shoe_size(name)
   #game_hash[team][:players][name][:shoe]
@@ -209,6 +244,7 @@ def winning_team
     team_totals[home_or_away] = 0
     characteristics[:players].each do |player, stats|
       team_totals[home_or_away] += stats[:points]
+<<<<<<< HEAD
     end
   end
   side = team_totals.max_by{|team, points| points }[0]
@@ -241,4 +277,10 @@ def long_name_steals_a_ton?
     end
   end
   most_steals_owner == player_with_longest_name
+=======
+      end
+    end
+  end
+  team_totals.max_by{|team, points| points }[0]
+>>>>>>> 263c94c361c26eb66e6f61590e2fbfc25e4c8c03
 end
