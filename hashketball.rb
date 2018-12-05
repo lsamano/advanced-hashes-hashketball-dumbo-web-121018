@@ -188,3 +188,57 @@ def big_shoe_rebounds
     end
   end
 end
+
+def most_points_scored
+  most_points_value = nil
+  most_points_owner = nil
+  game_hash.each do |status, characteristics|
+    characteristics[:players].each do |player, stats|
+      if most_points_value == nil || stats[:points] > most_points_value
+        most_points_value = stats[:points]
+        most_points_owner = player
+      end
+    end
+  end
+  most_points_owner
+end
+
+def winning_team
+  team_totals = {}
+  game_hash.each do |home_or_away, characteristics|
+    team_totals[home_or_away] = 0
+    characteristics[:players].each do |player, stats|
+      team_totals[home_or_away] += stats[:points]
+    end
+  end
+  side = team_totals.max_by{|team, points| points }[0]
+  game_hash[side][:team_name]
+end
+
+def player_with_longest_name
+  longest_name_value = nil
+  longest_name_owner = nil
+  game_hash.each do |status, characteristics|
+    characteristics[:players].each do |player, stats|
+      if longest_name_value == nil || player.length > longest_name_value
+        longest_name_value = player.length
+        longest_name_owner = player
+      end
+    end
+  end
+  longest_name_owner
+end
+
+def long_name_steals_a_ton?
+  most_steals_value = nil
+  most_steals_owner = nil
+  game_hash.each do |status, characteristics|
+    characteristics[:players].each do |player, stats|
+      if most_steals_value == nil || stats[:steals] > most_steals_value
+        most_steals_value = stats[:steals]
+        most_steals_owner = player
+      end
+    end
+  end
+  most_steals_owner == player_with_longest_name
+end
