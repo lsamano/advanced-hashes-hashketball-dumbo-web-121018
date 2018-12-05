@@ -188,3 +188,29 @@ def big_shoe_rebounds
     end
   end
 end
+
+def most_points_scored
+  most_points_value = nil
+  most_points_owner = nil
+  game_hash.each do |status, characteristics|
+    characteristics[:players].each do |player, stats|
+      if most_points_value == nil || stats[:points] > most_points_value
+        most_points_value = stats[:points]
+        most_points_owner = player
+      end
+    end
+  end
+  most_points_owner
+end
+
+def winning_team
+  team_totals = {}
+  game_hash.each do |home_or_away, characteristics|
+    team_totals[home_or_away] = 0
+    characteristics[:players].each do |player, stats|
+      team_totals[home_or_away] += stats[:points]
+      end
+    end
+  end
+  team_totals.max_by{|team, points| points }[0]
+end
