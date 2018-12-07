@@ -204,10 +204,12 @@ def big_shoe_rebounds
   players[player_with_most(:shoe)][:rebounds]
 end
 
+# Finds the player with the most points scored.
 def most_points_scored
 player_with_most(:points)
 end
 
+# Determines the winning team by adding the points scored by each player.
 def winning_team
   team_totals = {}
   game_hash.each do |home_or_away, team_stats|
@@ -220,8 +222,9 @@ def winning_team
   game_hash[side][:team_name]
 end
 
+# Finds the player with the longest name.
 def player_with_longest_name
-  array_of_names = players.keys.sort_by {|x| x.length}
+  array_of_names = players.keys.sort_by {|name| name.length}
   array_of_names[-1]
 end
 
