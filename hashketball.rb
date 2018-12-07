@@ -139,6 +139,15 @@ def player_with_most(stat)
   end
   owner
 end
+
+# Helper method for gathering all of the stats of one team only.
+def one_team_stats(team_name)
+  game_hash.each do |home_or_away, team_stats|
+    if team_stats[:team_name] == team_name
+      return team_stats
+    end
+  end
+end
 ### ----------------------------
 
 
@@ -164,11 +173,7 @@ end
 
 # Accepts a team name and returns the team colors.
 def team_colors(team_name)
-  game_hash.each do |home_or_away, team_stats|
-    if team_stats[:team_name] == team_name
-      return team_stats[:colors]
-    end
-  end
+  one_team_stats(team_name)[:colors]
 end
 
 # Gives the team names of the game in an array.
@@ -179,15 +184,6 @@ def team_names
   end
   team_names
 end
-
-def one_team_stats(team_name)
-  game_hash.each do |home_or_away, team_stats|
-    if team_stats[:team_name] == team_name
-      return team_stats
-    end
-  end
-end
-
 
 # Accepts a team name and returns an array of the players' numbers.
 def player_numbers(team_name)
