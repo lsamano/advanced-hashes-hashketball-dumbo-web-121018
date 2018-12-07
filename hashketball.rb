@@ -1,4 +1,5 @@
-# Write your code here!
+# Hash of the NBA game and all stats.
+# ex. game_hash[:home][:players]["Alan Anderson"][:number] = 0
 def game_hash
   game_hash = {
     home: {
@@ -116,14 +117,40 @@ def game_hash
   }
 end
 
-def num_points_scored(name)
-  #game_hash[team][:players][name][:points]
+# Helper method that collects all players into its own separate hash.
+def players
+  all_players = {}
   game_hash.each do |status, characteristics|
-    if characteristics[:players].has_key?(name)
-      return characteristics[:players][name][:points]
+    all_players.merge!(characteristics[:players])
+  end
+  all_players
+end
+
+# Accepts a number and returns the associated player's name.
+def player_by_number(number)
+  players.each do |name, stats|
+    if stats[:number] == number
+      return name
     end
   end
 end
+
+# Accepts a name and returns the number of points they scored for the game.
+def num_points_scored(name)
+  #game_hash[team][:players][name][:points]
+  players.each do |name, stats|
+    if stats[:players].has_key?(name)
+      return stats[:players][name][:points]
+    end
+  end
+end
+
+
+
+
+
+
+
 
 def shoe_size(name)
   #game_hash[team][:players][name][:shoe]
@@ -209,6 +236,7 @@ def winning_team
     team_totals[home_or_away] = 0
     characteristics[:players].each do |player, stats|
       team_totals[home_or_away] += stats[:points]
+#####
     end
   end
   side = team_totals.max_by{|team, points| points }[0]
@@ -241,4 +269,10 @@ def long_name_steals_a_ton?
     end
   end
   most_steals_owner == player_with_longest_name
+######
+      end
+    end
+  end
+  team_totals.max_by{|team, points| points }[0]
+### >>>>>>> 263c94c361c26eb66e6f61590e2fbfc25e4c8c03
 end
