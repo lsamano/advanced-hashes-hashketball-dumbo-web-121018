@@ -121,8 +121,8 @@ end
 # Helper method that collects all players into its own separate hash.
 def players
   all_players = {}
-  game_hash.each do |status, characteristics|
-    all_players.merge!(characteristics[:players])
+  game_hash.each do |home_or_away, team_stats|
+    all_players.merge!(team_stats[:players])
   end
   all_players
 end
@@ -164,9 +164,9 @@ end
 
 # Accepts a team name and returns the team colors.
 def team_colors(team_name)
-  game_hash.each do |status, characteristics|
-    if characteristics[:team_name] == team_name
-      return characteristics[:colors]
+  game_hash.each do |home_or_away, team_stats|
+    if team_stats[:team_name] == team_name
+      return team_stats[:colors]
     end
   end
 end
@@ -174,21 +174,26 @@ end
 # Gives the team names of the game in an array.
 def team_names
   team_names = []
-  game_hash.each do |status, characteristics|
-    team_names << characteristics[:team_name]
+  game_hash.each do |home_or_away, team_stats|
+    team_names << team_stats[:team_name]
   end
   team_names
 end
 
+def one_team_stats(team_name)
+  game_hash.each do |home_or_away, team_stats|
+    if team_stats[:team_name] == team_name
+      return team_stats
+    end
+  end
+end
+
+
 # Accepts a team name and returns an array of the players' numbers.
 def player_numbers(team_name)
   array_of_jerseys = []
-  game_hash.each do |status, characteristics|
-    if characteristics[:team_name] == team_name
-      characteristics[:players].each do |player, stats|
-        array_of_jerseys << characteristics[:players][player][:number]
-      end
-    end
+  one_team_stats(team_name)[:players].each do |player, stats|
+    array_of_jerseys << stats[:number]
   end
   array_of_jerseys
 end
@@ -209,9 +214,9 @@ end
 
 def winning_team
   team_totals = {}
-  game_hash.each do |home_or_away, characteristics|
+  game_hash.each do |home_or_away, team_stats|
     team_totals[home_or_away] = 0
-    characteristics[:players].each do |player, stats|
+    team_stats[:players].each do |player, stats|
       team_totals[home_or_away] += stats[:points]
     end
   end
