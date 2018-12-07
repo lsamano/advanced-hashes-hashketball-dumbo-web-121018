@@ -1,4 +1,5 @@
-# Write your code here!
+# Hash of the NBA game and all stats.
+# ex. game_hash[:home][:players]["Alan Anderson"][:number] = 0
 def game_hash
   game_hash = {
     home: {
@@ -116,91 +117,94 @@ def game_hash
   }
 end
 
+### HELPER METHODS
+# Helper method that collects all players into its own separate hash.
+def players
+  all_players = {}
+  game_hash.each do |status, characteristics|
+    all_players.merge!(characteristics[:players])
+  end
+  all_players
+end
+
+# Helper method for finding the player with the highest specific stat.
+def player_with_most(stat)
+  value = nil
+  owner = nil
+  players.each do |player, stats|
+    if value == nil || stats[stat] > value
+      value = stats[stat]
+      owner = player
+    end
+  end
+  owner
+end
+### ----------------------------
+
+
+### METHODS
+# Accepts a number and returns the associated player's name.
+def player_by_number(number)
+  players.each do |name, stats|
+    if stats[:number] == number
+      return name
+    end
+  end
+end
+
+# Accepts a name and returns the number of points they scored for the game.
 def num_points_scored(name)
-  #game_hash[team][:players][name][:points]
-  game_hash.each do |status, characteristics|
-    if characteristics[:players].has_key?(name)
-      return characteristics[:players][name][:points]
-    end
-  end
+players[name][:points]
 end
 
+# Accepts a name and returns their shoe size.
 def shoe_size(name)
-  #game_hash[team][:players][name][:shoe]
-  game_hash.each do |status, characteristics|
-    if characteristics[:players].has_key?(name)
-      return characteristics[:players][name][:shoe]
-    end
-  end
+  players[name][:shoe]
 end
 
-def team_colors(name)
+# Accepts a team name and returns the team colors.
+def team_colors(team_name)
   game_hash.each do |status, characteristics|
-    if characteristics[:team_name] == name
+    if characteristics[:team_name] == team_name
       return characteristics[:colors]
     end
   end
 end
 
+# Gives the team names of the game in an array.
 def team_names
-  names = []
+  team_names = []
   game_hash.each do |status, characteristics|
-    names << characteristics[:team_name]
+    team_names << characteristics[:team_name]
   end
-  names
+  team_names
 end
 
-def player_numbers(name)
-  array = []
+# Accepts a team name and returns an array of the players' numbers.
+def player_numbers(team_name)
+  array_of_jerseys = []
   game_hash.each do |status, characteristics|
-    if characteristics[:team_name] == name
+    if characteristics[:team_name] == team_name
       characteristics[:players].each do |player, stats|
-        array << characteristics[:players][player][:number]
+        array_of_jerseys << characteristics[:players][player][:number]
       end
     end
   end
-  array
+  array_of_jerseys
 end
 
+# Accepts a player's name and returns a hash of their stats.
 def player_stats(name)
-  game_hash.each do |status, characteristics|
-    if characteristics[:players].has_key?(name)
-      return characteristics[:players][name]
-    end
-  end
+  players[name]
 end
 
+# Finds the player with the largest shoe size and returns their rebounds.
 def big_shoe_rebounds
-  biggest_shoe_value = nil
-  biggest_shoe_owner = nil
-  game_hash.each do |status, characteristics|
-    characteristics[:players].each do |player, stats|
-      if biggest_shoe_value == nil || stats[:shoe] > biggest_shoe_value
-        biggest_shoe_value = stats[:shoe]
-        biggest_shoe_owner = player
-      end
-    end
-  end
-
-  game_hash.each do |status, characteristics|
-    if characteristics[:players].has_key?(biggest_shoe_owner)
-      return characteristics[:players][biggest_shoe_owner][:rebounds]
-    end
-  end
+  players[player_with_most(:shoe)][:rebounds]
 end
 
 def most_points_scored
-  most_points_value = nil
-  most_points_owner = nil
-  game_hash.each do |status, characteristics|
-    characteristics[:players].each do |player, stats|
-      if most_points_value == nil || stats[:points] > most_points_value
-        most_points_value = stats[:points]
-        most_points_owner = player
-      end
-    end
-  end
-  most_points_owner
+player_with_most(:points)
 end
 
 def winning_team
@@ -216,29 +220,10 @@ def winning_team
 end
 
 def player_with_longest_name
-  longest_name_value = nil
-  longest_name_owner = nil
-  game_hash.each do |status, characteristics|
-    characteristics[:players].each do |player, stats|
-      if longest_name_value == nil || player.length > longest_name_value
-        longest_name_value = player.length
-        longest_name_owner = player
-      end
-    end
-  end
-  longest_name_owner
+  array_of_names = players.keys.sort_by {|x| x.length}
+  array_of_names[-1]
 end
 
 def long_name_steals_a_ton?
-  most_steals_value = nil
-  most_steals_owner = nil
-  game_hash.each do |status, characteristics|
-    characteristics[:players].each do |player, stats|
-      if most_steals_value == nil || stats[:steals] > most_steals_value
-        most_steals_value = stats[:steals]
-        most_steals_owner = player
-      end
-    end
-  end
-  most_steals_owner == player_with_longest_name
+  player_with_most(:steals) == player_with_longest_name
 end
