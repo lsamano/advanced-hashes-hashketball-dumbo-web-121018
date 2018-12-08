@@ -148,6 +148,15 @@ def one_team_stats(team_name)
     end
   end
 end
+
+def array_of_one_stat(home_or_away, stat)
+  array = []
+  game_hash[home_or_away][:players].each do |player, player_stats|
+    array << player_stats[stat]
+  end
+  array
+end
+
 ### ----------------------------
 
 ### METHODS
@@ -186,11 +195,13 @@ end
 
 # Accepts a team name and returns an array of the players' numbers.
 def player_numbers(team_name)
-  array_of_jerseys = []
-  one_team_stats(team_name)[:players].each do |player, stats|
-    array_of_jerseys << stats[:number]
+  side = nil
+  game_hash.each do |home_or_away, team_stats|
+    if team_stats[:team_name] == team_name
+      side = home_or_away
+    end
   end
-  array_of_jerseys
+  array_of_one_stat(side, :number)
 end
 
 # Accepts a player's name and returns a hash of their stats.
