@@ -150,7 +150,6 @@ def one_team_stats(team_name)
 end
 ### ----------------------------
 
-
 ### METHODS
 # Accepts a number and returns the associated player's name.
 def player_by_number(number)
@@ -210,6 +209,11 @@ player_with_most(:points)
 end
 
 # Determines the winning team by adding the points scored by each player.
+# First it adds each team's points together and stores it as a key-value pair.
+# ex. team_totals = {home: 102, away: 114}
+# Then it takes the scores of each team and sorts them, storing the team with
+# the higher amount of points into the variable "winner" (:home or :away).
+# The game_hash is then checked and the winning team name is returned.
 def winning_team
   team_totals = {}
   game_hash.each do |home_or_away, team_stats|
@@ -218,16 +222,16 @@ def winning_team
       team_totals[home_or_away] += stats[:points]
     end
   end
-  side = team_totals.max_by{|team, points| points }[0]
-  game_hash[side][:team_name]
+  winner = team_totals.max_by{|team, points| points }[0]
+  game_hash[winner][:team_name]
 end
 
-# Finds the player with the longest name.
+# Finds the player with the longest.
 def player_with_longest_name
-  array_of_names = players.keys.sort_by {|name| name.length}
-  array_of_names[-1]
+  players.keys.sort_by { |name| name.length }[-1]
 end
 
+# Checks if the player with the longest name also has the most steals.
 def long_name_steals_a_ton?
   player_with_most(:steals) == player_with_longest_name
 end
